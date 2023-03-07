@@ -6,7 +6,6 @@ import url from 'url'
 const requestHandler = (req, res) => {
     const { headers, method } = req;
     const parsedUrl = url.parse(req.url, true);
-
     let body = [];
 
     req.on('error', (err) => {
@@ -24,12 +23,28 @@ const requestHandler = (req, res) => {
         return res.end();
     }
 
+  
+    if(method === "GET" && req.url.match(/^\/\?name=([^\/]+)/)  ){
+       const name = parsedUrl.query.name;
+        res.write( `Hello, ${name}`)
+        res.end();
+    }
+   
     if (method === "GET" && req.url === "/messages") {
-       
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/html');
+        res.write('<html>');
+        res.write('<head><title>Messages</title><head>');
+        res.write('<body>')
+        res.write('<ul>')
+        res.write('<li>1 ---> Yatin<li><li>2 ---> Arpit<li>')
+        res.write('<li>3 ---> Gautam<li><li>4 ---> Kritika<li>')
+        res.write('</ul>')
+        res.write('</body>')
+        res.write('</html>');
         return res.end();
 
     }
-
 
     const regex = new RegExp('^/users/([^/]+)/messages/([^/]+)$');
 
@@ -53,6 +68,7 @@ const requestHandler = (req, res) => {
 
     }
 
+   
 
     if (method === "POST" && req.url === "/create-message") {
 
@@ -64,7 +80,6 @@ const requestHandler = (req, res) => {
             const parsedBody = Buffer.concat(body).toString().split("=")[1]
 
             fs.writeFile('messages.txt', parsedBody, () => {
-                console.log(parsedBody)
                 res.statusCode = 302;
                 res.setHeader('Location', './messages');
                 return res.end();
