@@ -13,6 +13,7 @@ const requestHandler = (req, res) => {
     })
 
 
+
     if (method === "GET" && req.url === "/") {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/html');
@@ -23,13 +24,13 @@ const requestHandler = (req, res) => {
         return res.end();
     }
 
-  
-    if(method === "GET" && req.url.match(/^\/\?name=([^\/]+)/)  ){
-       const name = parsedUrl.query.name;
-        res.write( `Hello, ${name}`)
-        res.end();
+
+    if (method === "GET" && req.url.match(/^\/\?name=([^\/]+)/)) {
+        const name = parsedUrl.query.name;
+        res.write(`Hello, ${name}`)
+        return res.end();
     }
-   
+
     if (method === "GET" && req.url === "/messages") {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/html');
@@ -68,7 +69,7 @@ const requestHandler = (req, res) => {
 
     }
 
-   
+
 
     if (method === "POST" && req.url === "/create-message") {
 
@@ -80,22 +81,27 @@ const requestHandler = (req, res) => {
             const parsedBody = Buffer.concat(body).toString().split("=")[1]
 
             fs.writeFile('messages.txt', parsedBody, () => {
-                res.statusCode = 302;
-                res.setHeader('Location', './messages');
-                return res.end();
+                console.log("Data written to file done", parsedBody)
             })
+
         })
-    }
-    else {
-        res.statusCode = 404;
-        res.setHeader('Content-Type', 'application/json');
-        res.write(JSON.stringify("404 Page Not found"));
+
+        res.statusCode = 302;
+        res.setHeader('Location', './messages');
         return res.end();
     }
 
     res.on('error', (err) => {
         console.error(err);
     });
+
+    
+    res.statusCode = 404;
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify("404 Page Not found"));
+    return res.end();
+
+
 
 
 }
