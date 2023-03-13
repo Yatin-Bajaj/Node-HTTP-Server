@@ -1,0 +1,15 @@
+{
+  "name": "simple-http-server",
+  "version": "1.0.0",
+  "description": "Creating a HTTP Server usig Node",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "Yatin",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
